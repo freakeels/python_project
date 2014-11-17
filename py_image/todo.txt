@@ -1,0 +1,10 @@
+[single video part]
+1. post 16 images into 1
+2. delete 16 temporary images
+
+[multiple/recursive videos part]
+3. os.walk through root directory
+4. iteratively create picture of step 1~2 of each videos
+
+[store repository]
+5. create same folder structure under root
