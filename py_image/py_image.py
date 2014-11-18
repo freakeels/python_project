@@ -5,9 +5,9 @@ from PIL import ImageDraw
 import glob
 
 _file_name = 'test.mp4'
-_thumbnail_number = 15
-_preview_x_num = 3
-_preview_y_num = 5
+_thumbnail_number = 20
+_preview_x_num = 5
+_preview_y_num = 4
 _thumb_size_x = 300
 _thumb_size_y = 200
 _thumb_gap_x = 50
@@ -15,6 +15,9 @@ _thumb_gap_y = 20
 _preview_x_total = _thumb_size_x * _preview_x_num + _thumb_gap_x * (_preview_x_num+1)
 _preview_y_total = _thumb_size_y * _preview_y_num + _thumb_gap_y * (_preview_y_num+1)
 _cap_init_frame = 1000
+
+_source_path = '/Users/hsuchih-kao/Downloads/Video/*.'
+_extension = ('mp4', 'mkv', 'avi')
 
 def create_thumbnails(video_src, thumbnail_number):
     thumbnails = []
@@ -44,7 +47,7 @@ def output_thumb_images(thumbnail_list, thumbnail_number):
         cv2.imwrite("frame%06d.jpg" % i, thumbnail_list[i])     # save frame as JPEG file
 
 def create_thumbnail_preview(thumbnails, thumbnail_number):
-    top_image = Image.new("RGB", (_preview_x_total, _preview_y_total), "white")
+    top_image = Image.new("RGB", (_preview_x_total, _preview_y_total), 'grey')
 
     for y in range(thumbnail_number/_preview_x_num):
         for x in range(thumbnail_number/_preview_y_num):
@@ -60,13 +63,26 @@ def create_thumbnail_preview(thumbnails, thumbnail_number):
     # draw.text((0, 0),"Sample Text", (0, 0, 0), font=font)
     return top_image
 
+def grad_file_with_ext(source_path, extension):
+    file_types = []
+    for ext in extension:
+        file_types.append(source_path+ext)
+
+    files_grabbed = []
+    for files in file_types:
+        files_grabbed.extend(glob.glob(files))
+    return files_grabbed
+
 def main():
-    for video_name in glob.glob('/Users/hsuchih-kao/Downloads/Video/*.avi'):
-        print video_name
+    files_grabbed = grad_file_with_ext(_source_path, _extension)
+
+
+    for video_name in files_grabbed:
         video_src = cv2.VideoCapture(video_name)
         thumbnails = create_thumbnails(video_src, _thumbnail_number)
         thumbnail_preview = create_thumbnail_preview(thumbnails, _thumbnail_number)
-        thumbnail_preview.save(video_name.split('.')[0]+"_result.jpg")
+        thumbnail_preview.save(video_name.split('.')[0]+"_"+video_name.split('.')[1]+".jpg")
+        print video_name
 
 
 if __name__ == '__main__':
